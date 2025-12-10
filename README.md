@@ -34,29 +34,29 @@
 
 <p align="center">
   <img src="images/service/item_create.png" width="48%" alt="Item List" style="border-radius: 10px; margin-right: 10px;"/>
-  <img src="images/service/item_list.png" width="48%" alt="Item Detail" style="border-radius: 10px;"/>
+  <img src="images/service/s3.png" width="48%" alt="Item Detail" style="border-radius: 10px;"/>
 </p>
 
-* **LP 상품 등록/조회**: 관리자는 앨범 커버 이미지를 업로드하고 상품을 등록합니다.
-* **AWS S3 연동**: `S3Service`를 통해 이미지 파일을 클라우드 스토리지에 안전하게 저장하고, UUID 기반의 파일명으로 관리하여 중복을 방지합니다.
+* **LP 상품 등록/조회**: 관리자는 앨범 커버 이미지를 업로드하고, 희귀 재즈 LP 상품 정보를 등록하여 사용자에게 제공합니다.
+* **AWS S3 연동**: AWS S3를 연동하여 고화질의 앨범 아트를 안전하고 효율적으로 저장·관리합니다.
 
-### 2. 실시간 인기 랭킹 (Redis ZSet)
+### 2. 실시간 인기 랭킹
 
 <p align="center">
   <img src="images/service/ranking.png" width="70%" alt="Ranking System" style="border-radius: 10px;"/>
 </p>
 
-* **실시간 판매량 집계**: 상품 주문 시 Redis의 `Sorted Set(ZSet)`을 활용하여 판매량을 실시간으로 `increment` 합니다.
-* **BEST Seller**: `reverseRangeWithScores`를 통해 판매량이 가장 높은 Top 5 앨범을 즉시 조회하여 메인 화면에 노출합니다. DB 부하 없이 실시간 트렌드를 반영합니다.
+* **실시간 판매량 집계**: 사용자들의 주문 데이터를 실시간으로 집계하여 현재 가장 핫한 앨범을 파악합니다.
+* **BEST Seller**: 판매량이 가장 높은 Top 5 앨범을 메인 화면에 즉시 노출하여 사용자의 구매 결정을 돕습니다.
 
-### 3. 주문 및 동시성 제어 (Redisson)
+### 3. 안정적인 주문 시스템
 
 <p align="center">
-  <img src="images/service/item_buy.png" width="70%" alt="Order Process" style="border-radius: 10px;"/>
+  <img src="images/service/order.png" width="70%" alt="Order Process" style="border-radius: 10px;"/>
 </p>
 
-* **재고 관리**: 한정된 수량의 LP를 다수의 사용자가 동시에 주문할 때 발생하는 **Race Condition**을 해결했습니다.
-* **분산 락 적용**: `Redisson` 라이브러리를 도입하여 상품 ID(itemId) 기반의 락을 획득, 재고 차감의 원자성을 보장합니다.
+* **재고 관리**: 한정된 수량의 희귀 LP에 대해 다수의 사용자가 동시에 주문하더라도, 재고 오류 없이 정확하게 처리합니다.
+* **대용량 트래픽 대응**: 선착순 구매와 같이 트래픽이 급증하는 상황에서도 주문 누락 없는 안정적인 서비스를 보장합니다.
 
 ### 4. 장바구니 및 주문 내역
 
@@ -65,13 +65,9 @@
   <img src="images/service/order_list.png" width="48%" alt="Order List" style="border-radius: 10px;"/>
 </p>
 
-* **장바구니**: 원하는 앨범을 담고, 일괄 주문할 수 있습니다.
-* **주문 내역 및 캐싱**: 최근 주문 내역 조회 시 DB 부하를 줄이기 위해 **Redis Caching** 전략(`order:list:member:{id}`)을 적용하여 조회 성능을 개선했습니다.
+* **편리한 쇼핑**: 원하는 앨범을 장바구니에 담아두고 한 번에 일괄 결제할 수 있습니다.
+* **고속 조회 성능**: 캐싱 전략을 도입하여, 주문 내역이 쌓여도 지연 없이 빠르게 과거 구매 이력을 확인할 수 있습니다.
 
-### 5. 분산 환경 세션 관리
-
-* **Spring Session Redis**: 다중 서버 환경(Scale-out)에서도 로그인 상태가 유지되도록 Redis를 세션 저장소로 활용합니다.
-* **동시 로그인 제한**: `UserSessionService`를 통해 동일 아이디의 동시 접속 세션을 제어하고, 보안성을 강화했습니다.
 
 ---
 
@@ -123,6 +119,15 @@ Vinyl Groove는 **AWS Cloud** 환경 위에서 **CI/CD 자동화**가 구축된 
 - **구현:** `OrderService`에서 `redissonClient.getLock("order:item:" + itemId)`를 통해 상품별로 락을 획득. `tryLock`을 사용하여 대기 시간과 락 점유
   시간을 설정함으로써 데드락 방지 및 정합성 보장.
 
+#### 📊 부하 검증 (k6 Load Testing)
+> **시나리오:** 재고가 **50개**인 상품에 대해 **100명의 사용자**가 동시에 주문 요청 (Concurrency 100) <br>
+> **기대 결과:** 50건 주문 성공(200 OK), 50건 주문 실패(409 Conflict - 재고 부족) <br>
+> **테스트 도구:** k6 (Local Environment)
+
+<p align="center">
+  <img src="images/service/lock.png" width="70%" alt="Order Process" style="border-radius: 10px;"/>
+</p>
+
 ### 2. Redis ZSet을 활용한 실시간 베스트셀러 랭킹
 
 - **문제:** "가장 많이 팔린 상품"을 보여주기 위해 매번 `Order` 테이블 전체를 `count`하고 정렬(Sort)하는 쿼리는 DB에 심각한 부하를 유발함.
@@ -130,12 +135,15 @@ Vinyl Groove는 **AWS Cloud** 환경 위에서 **CI/CD 자동화**가 구축된 
 - **구현:** 주문 발생 시 `redisTemplate.opsForZSet().incrementScore`로 점수(판매량)를 O(1) 복잡도로 증가시키고, 조회 시 `reverseRangeWithScores`로
   상위 N개를 즉시 반환하여 성능 최적화.
 
-### 3. 조회수 어뷰징 방지 및 최적화
+<p align="center">
+  <img src="images/service/redis.png" width="70%" alt="Order Process" style="border-radius: 10px;"/>
+</p>
 
-- **문제:** 단순 DB 업데이트 방식의 조회수 카운팅은 I/O 부하가 크고, 새로고침을 통한 어뷰징 공격에 취약함.
-- **해결:** **Redis HyperLogLog(또는 Set)와 Expiration** 기능 활용.
-- **구현:** `CounterService`에서 사용자 식별자(IP 등)와 게시글 ID를 키로 하여 Redis에 저장하고 TTL(1일)을 설정. 이를 통해 1일 1회 조회수 제한을 메모리 레벨에서 효율적으로
-  처리.
+### 3. 분산 환경 세션 관리
+
+* **Spring Session Redis**: 다중 서버 환경(Scale-out)에서도 로그인 상태가 유지되도록 Redis를 세션 저장소로 활용합니다.
+* **동시 로그인 제한**: `UserSessionService`를 통해 동일 아이디의 동시 접속 세션을 제어하고, 보안성을 강화했습니다.
+
 
 ---
 
