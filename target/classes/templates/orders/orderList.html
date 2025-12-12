@@ -1,0 +1,266 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>주문 목록</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h1>주문 목록</h1>-->
+
+<!--<table border="1">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>상품명</th>-->
+<!--        <th>수량</th>-->
+<!--        <th>주문 날짜</th>-->
+<!--        <th>상태</th>-->
+
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="order : ${orders}">-->
+<!--        &lt;!&ndash; 첫 번째 상품 이름 &ndash;&gt;-->
+<!--        <td>-->
+<!--            <ul>-->
+<!--                <li th:each="item : ${order.orderItems}" th:text="${item.item.name}"></li>-->
+<!--            </ul>-->
+<!--        </td>-->
+
+<!--        &lt;!&ndash; 각 상품 수량 &ndash;&gt;-->
+<!--        <td>-->
+<!--            <ul>-->
+<!--                <li th:each="item : ${order.orderItems}" th:text="${item.count}"></li>-->
+<!--            </ul>-->
+<!--        </td>-->
+
+<!--        <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></td>-->
+
+<!--        <td th:text="${order.status}"></td>-->
+
+
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+
+<!--<br>-->
+<!--<a th:href="@{/}">홈으로 돌아가기</a>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Vinyl Groove - 주문 목록</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #000000;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #121212;
+            border-radius: 4px;
+            box-shadow: 0 4px 30px rgba(212, 175, 55, 0.1);
+            border: 1px solid #333;
+        }
+
+        h1 {
+            color: #d4af37;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 36px;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            text-transform: uppercase;
+        }
+
+        h1::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: #d4af37;
+            margin: 15px auto 30px;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 40px;
+        }
+
+        .order-table thead th {
+            background-color: #1a1a1a;
+            color: #d4af37;
+            padding: 15px;
+            text-align: left;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        .order-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .order-table tbody tr:hover {
+            background-color: rgba(212, 175, 55, 0.05);
+        }
+
+        .order-table td {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            vertical-align: top;
+        }
+
+        .order-table ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .order-table li {
+            padding: 5px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .order-table li::before {
+            content: "♫";
+            position: absolute;
+            left: 0;
+            color: #d4af37;
+        }
+
+        .status-ordered {
+            color: #d4af37;
+        }
+
+        .status-cancelled {
+            color: #b3b3b3;
+            text-decoration: line-through;
+        }
+
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            color: #b3b3b3;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-weight: 300;
+        }
+
+        .home-link:hover {
+            color: #d4af37;
+        }
+
+        .home-link::before {
+            content: "←";
+            margin-right: 8px;
+            color: #d4af37;
+        }
+
+        .vinyl-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .vinyl-spinner {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #333 30%, #222 70%, #1a1a1a 90%);
+            border: 2px solid #d4af37;
+            position: relative;
+            margin-right: 20px;
+            animation: spin 4s linear infinite;
+        }
+
+        .vinyl-spinner::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #d4af37;
+            border: 2px solid #121212;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+    <body>
+    <div class="container">
+        <div class="vinyl-header">
+            <div class="vinyl-spinner"></div>
+            <h1>Order List</h1>
+            <div class="vinyl-spinner"></div>
+        </div>
+
+        <div>
+            <strong>총 주문 건수: <span th:text="${#lists.size(orders)}">0</span>건</strong>
+        </div>
+
+        <table class="order-table">
+            <thead>
+            <tr>
+                <th>주문 상품</th>
+                <th>개별 수량</th>
+                <th>총 주문 수량</th>
+                <th>총 주문 금액</th>
+                <th>주문 날짜</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td>
+                    <ul>
+                        <li th:each="orderItem : ${order.orderItems}" th:text="${orderItem.item.name}">상품명</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li th:each="orderItem : ${order.orderItems}" th:text="${orderItem.count}">수량</li>
+                    </ul>
+                </td>
+                <td th:text="${order.getTotalCount()}"></td>
+
+                <td th:text="${#numbers.formatInteger(order.getTotalPrice(), 3, 'COMMA')} + '원'"></td>
+
+                <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:class="${order.status.name() == 'CANCEL'} ? 'status-cancelled' : 'status-ordered'"
+                    th:text="${order.status.name()}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <a th:href="@{/home}" class="home-link">홈으로 돌아가기</a>
+    </div>
+    </body>
+</html>

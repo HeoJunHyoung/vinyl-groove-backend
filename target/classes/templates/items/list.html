@@ -1,0 +1,262 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>상품 목록</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>상품 목록</h1>-->
+
+<!--<div class="item-list">-->
+<!--    <div class="item-card" th:each="item : ${items}">-->
+<!--        &lt;!&ndash; 이미지: S3에 저장된 이미지 URL 경로로 대체 &ndash;&gt;-->
+<!--        <img th:src="${item.imageUrl}" alt="상품 이미지" />-->
+
+
+<!--        <div class="item-info" th:text="${item.name}">상품명</div>-->
+<!--        <div class="item-price" th:text="'가격: ' + ${item.price} + '원'">가격</div>-->
+<!--        <div class="item-stock" th:text="'재고 수량: ' + ${item.stockQuantity}">재고 수량</div>-->
+
+<!--        <a th:href="@{|/items/${item.id}|}" class="item-detail-link">상세보기</a>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<a th:href="@{/items/new}">상품 추가</a>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vinyl Groove - 상품 목록</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #000000;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            border: 1px solid #d4af37;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color: #d4af37;
+            color: #121212;
+        }
+
+        h1 {
+            color: #d4af37;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 36px;
+            letter-spacing: 1px;
+            text-align: center;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        h1::after {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 2px;
+            background: #d4af37;
+            margin: 15px auto 30px;
+        }
+
+        .item-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .item-card {
+            background-color: #121212;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid #333;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .item-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        .item-info {
+            padding: 20px;
+        }
+
+        .item-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-details {
+            color: #b3b3b3;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .item-price {
+            color: #d4af37;
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .item-stock {
+            color: #b3b3b3;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .item-link {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            background-color: #d4af37;
+            color: #121212;
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .item-link:hover {
+            background-color: #c9a227;
+        }
+
+        .vinyl-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .vinyl-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #333 30%, #222 70%, #1a1a1a 90%);
+            border: 2px solid #d4af37;
+            position: relative;
+            margin: 0 20px;
+        }
+
+        .vinyl-icon::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #d4af37;
+            border: 2px solid #121212;
+        }
+        .ranking-section {
+	    background-color: #1a1a1a;
+	    border: 1px solid #d4af37;
+	    padding: 20px;
+	    margin-bottom: 40px;
+	    border-radius: 8px;
+	    color: #d4af37;
+		}
+		
+		.ranking-section h2 {
+		    margin-top: 0;
+		    font-family: 'Playfair Display', serif;
+		    font-weight: 700;
+		}
+		
+		.ranking-section ol {
+		    padding-left: 20px;
+		}
+		
+		.ranking-section li {
+		    margin-bottom: 8px;
+		}
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 돌아가기 링크 -->
+    <a th:href="@{/home}" class="back-link">← 돌아가기</a>
+
+    <div class="vinyl-header">
+        <div class="vinyl-icon"></div>
+        <h1>Jazz LP Collection</h1>
+        <div class="vinyl-icon"></div>
+    </div>
+	<!-- 인기 판매량 랭킹 섹션 -->
+<div class="ranking-section" th:if="${popularItems != null and !popularItems.isEmpty()}">
+    <h2>💿 BEST Seller LP </h2>
+    <ol>
+        <li th:each="lp : ${popularItems}">
+            <span th:text="${lp.name}">LP 이름</span>
+            <span th:text="' - ' + ${lp.salesCount} + '장 판매'">판매량</span>
+        </li>
+    </ol>
+</div>
+    <div class="item-list">
+        <div class="item-card" th:each="item : ${items}" style="position: relative;">
+            <img th:src="${item.imageUrl}" alt="LP Album Cover" class="item-image">
+
+            <div class="item-info">
+                <div class="item-title" th:text="${item.name}"></div>
+                <div class="item-details">
+                    <div class="item-price" th:text="'₩' + ${#numbers.formatInteger(item.price, 1, 'COMMA')}"></div>
+                    <div class="item-stock" th:text="'재고: ' + ${item.stockQuantity} + '장'"></div>
+  <span th:if="${popularItemIds.contains(item.id)}"
+        style="position: absolute; top: 8px; left: 8px;
+               background-color: #ff7e00; color: #121212; font-weight: bold;
+               padding: 4px 8px; border-radius: 4px; font-size: 12px;">
+    인기 상품
+  </span>
+                </div>
+            </div>
+
+            <a th:href="@{|/items/${item.id}|}" class="item-link">View Details</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

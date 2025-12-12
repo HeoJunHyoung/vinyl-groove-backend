@@ -1,0 +1,183 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>홈</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>홈페이지</h1>-->
+
+<!--<p><strong th:text="${member.username}">사용자</strong>님 환영합니다!</p>-->
+
+<!--&lt;!&ndash; 상품 리스트 링크 추가 &ndash;&gt;-->
+<!--<p><a th:href="@{/items/list}">상품 목록</a></p>-->
+
+<!--&lt;!&ndash; 상품 추가 버튼 &ndash;&gt;-->
+<!--<p><a th:href="@{/items/new}">상품 추가하기</a></p>-->
+
+<!--&lt;!&ndash; 주문 내역 보기 버튼 &ndash;&gt;-->
+<!--<p><a th:href="@{/orders}">주문 내역 보기</a></p>-->
+
+<!--<p><a th:href="@{/}">로그아웃</a> (← 단순 링크지만 실제 로그아웃 처리는 따로 구현 필요)</p>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vinyl Groove - 홈</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #000000;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #121212;
+            border-radius: 4px;
+            box-shadow: 0 4px 30px rgba(212, 175, 55, 0.1);
+            border: 1px solid #333;
+        }
+
+        h1 {
+            color: #d4af37;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 36px;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            text-transform: uppercase;
+        }
+
+        h1::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: #d4af37;
+            margin: 15px auto 0;
+        }
+
+        .welcome-message {
+            font-size: 18px;
+            color: #b3b3b3;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .welcome-message strong {
+            color: #d4af37;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            text-decoration: none;
+            border-radius: 4px;
+            border-left: 4px solid #d4af37;
+            transition: all 0.3s ease;
+            font-weight: 400;
+        }
+
+        .nav-link:hover {
+            background-color: #222;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.1);
+        }
+
+        .nav-link::before {
+            content: "♫";
+            margin-right: 15px;
+            color: #d4af37;
+            font-size: 18px;
+        }
+
+        .logout-link {
+            display: inline-flex;
+            align-items: center;
+            color: #b3b3b3;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            font-weight: 300;
+        }
+
+        .logout-link:hover {
+            color: #d4af37;
+        }
+
+        .logout-link::before {
+            content: "←";
+            margin-right: 8px;
+            color: #d4af37;
+        }
+
+        .vinyl-icon {
+            display: block;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #333 30%, #222 70%, #1a1a1a 90%);
+            border: 2px solid #d4af37;
+            position: relative;
+        }
+
+        .vinyl-icon::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #d4af37;
+            border: 2px solid #121212;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="vinyl-icon"></div>
+    <h1>Vinyl Groove</h1>
+
+    <p class="welcome-message">
+        <strong th:text="${username}">사용자</strong>님, 재즈의 세계에 오신 것을 환영합니다!
+    </p>
+
+    <div class="nav-menu">
+        <a th:href="@{/items/list}" class="nav-link">상품 목록</a>
+        <a th:href="@{/items/new}" class="nav-link">상품 추가하기</a>
+        <a th:href="@{/orders}" class="nav-link">주문 내역 보기</a>
+        <a th:href="@{/cart/view}" class="nav-link">장바구니 보기</a>
+    </div>
+
+    <a th:href="@{/logout}" class="logout-link">로그아웃</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <title>상품 상세</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>상품 상세 정보</h1>-->
+
+<!--<p><strong>상품명:</strong> <span th:text="${item.name}">상품명</span></p>-->
+<!--<p><strong>가격:</strong> <span th:text="${item.price}">가격</span></p>-->
+<!--<p><strong>재고:</strong> <span th:text="${item.stockQuantity}">재고</span></p>-->
+<!--<p><strong>이미지:</strong></p>-->
+<!--<img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" alt="상품 이미지" style="max-width: 400px;"/>-->
+
+<!--<form th:action="@{/orders/new}" method="post">-->
+<!--  <input type="hidden" name="itemId" th:value="${item.id}" />-->
+<!--  <label for="count">수량:</label>-->
+<!--  <input type="number" id="count" name="count" min="1" value="1" required />-->
+<!--  <button type="submit">구매하기</button>-->
+<!--</form>-->
+
+<!--<a th:href="@{/items/list}">목록으로 돌아가기</a>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vinyl Groove - 상품 상세</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;700&display=swap');
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #000000;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #121212;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 30px rgba(212, 175, 55, 0.1);
+            border: 1px solid #333;
+        }
+        h1 {
+            color: #d4af37;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 36px;
+            letter-spacing: 1px;
+            text-align: center;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        h1::after {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 2px;
+            background: #d4af37;
+            margin: 15px auto 30px;
+        }
+
+        .vinyl-display {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 40px;
+            align-items: center;
+        }
+
+        .vinyl-image {
+            width: 350px;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 5px solid #1a1a1a;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .vinyl-details {
+            flex: 1;
+        }
+
+        .detail-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .detail-label {
+            color: #d4af37;
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 18px;
+            color: #e0e0e0;
+        }
+
+        .order-form {
+            background-color: #1a1a1a;
+            padding: 30px;
+            border-radius: 4px;
+            margin-top: 40px;
+            border-left: 4px solid #d4af37;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            color: #b3b3b3;
+            font-weight: 300;
+            min-width: 80px;
+        }
+
+        input[type="number"] {
+            padding: 12px 15px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background-color: #121212;
+            color: #e0e0e0;
+            font-size: 16px;
+            width: 80px;
+        }
+
+        .buy-button {
+            background-color: #d4af37;
+            color: #121212;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .buy-button:hover {
+            background-color: #c9a227;
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 30px;
+            color: #b3b3b3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #d4af37;
+        }
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .buy-button {
+            background-color: #d4af37;
+            color: #121212;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Playfair Display', serif;
+            flex: 1;
+        }
+
+        .back-link::before {
+            content: "←";
+            margin-right: 8px;
+            color: #d4af37;
+        }
+
+        .vinyl-icon {
+            display: block;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #333 30%, #222 70%, #1a1a1a 90%);
+            border: 2px solid #d4af37;
+            position: relative;
+        }
+        .cart-button {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Playfair Display', serif;
+            flex: 1;
+        }
+
+        .cart-button:hover {
+            background-color: #555;
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 30px;
+            color: #b3b3b3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .vinyl-icon::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #d4af37;
+            border: 2px solid #121212;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="vinyl-icon"></div>
+    <h1>LP Album Details</h1>
+
+    <div class="vinyl-display">
+        <img th:if="${item.imageUrl != null}" th:src="${item.imageUrl}" alt="LP Album Cover" class="vinyl-image">
+
+        <div class="vinyl-details">
+            <div class="detail-item">
+                <div class="detail-label">Album Title</div>
+                <div class="detail-value" th:text="${item.name}"></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Price</div>
+                <div class="detail-value" th:text="'₩' + ${#numbers.formatInteger(item.price, 1, 'COMMA')}"></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">In Stock</div>
+                <div class="detail-value" th:text="${item.stockQuantity}"></div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Seller</div>
+                <div class="detail-value" th:text="${item.sellerName}">판매자</div>
+            </div>
+
+            <!-- 조회수 표시 -->
+            <div class="detail-item">
+                <div class="detail-label">Views</div>
+                <div class="detail-value" th:text="${viewCount} + ' views'"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 수량 입력 필드 -->
+    <div class="form-group">
+        <label for="count">Quantity:</label>
+
+        <!-- 에러 메시지 위치 -->
+        <div th:if="${errorMessage}" style="color: red; margin-bottom: 5px;">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <input type="number" id="count" name="count" min="1" th:value="${param.count}" required />
+    </div>
+
+    <!-- 버튼 컨테이너 추가 -->
+    <div class="button-container">
+        <!-- 바로 구매 폼 -->
+        <form th:action="@{/orders/new}" method="post" style="margin: 0; flex: 1;">
+            <input type="hidden" name="itemId" th:value="${item.id}" />
+            <input type="hidden" name="count" id="buyCountHidden" />
+            <input type="hidden" name="price" th:value="${item.price}" />
+            <button type="submit" class="buy-button" onclick="document.getElementById('buyCountHidden').value = document.getElementById('count').value;">Buy</button>
+        </form>
+
+        <!-- 장바구니 담기 폼 -->
+        <form th:action="@{/cart/add}" method="post" style="margin: 0; flex: 1;">
+            <input type="hidden" name="itemId" th:value="${item.id}" />
+            <input type="hidden" name="count" id="cartCountHidden" />
+            <button type="submit" class="cart-button" onclick="document.getElementById('cartCountHidden').value = document.getElementById('count').value;">Add to Cart</button>
+        </form>
+    </div>
+
+    <!--				<div class="form-group">
+                        <label for="count">Quantity:</label>
+                        <input type="number" id="count" name="count" min="1" value="1" required />
+                        <button type="submit" class="buy-button">Buy</button>
+                    </div>
+                </form>-->
+</div>
+
+<a th:href="@{/items/list}" class="back-link">Back to Collection</a>
+</div>
+</body>
+</html>

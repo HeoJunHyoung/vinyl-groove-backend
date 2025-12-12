@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cart</title>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            background-color: #000;
+            color: #eee;
+            font-family: 'Roboto', sans-serif;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #d4af37;
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #333;
+            text-align: left;
+        }
+
+        th {
+            color: #d4af37;
+        }
+
+        .order-button {
+            background-color: #d4af37;
+            border: none;
+            color: #121212;
+            padding: 12px 24px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .order-button:hover {
+            background-color: #c9a227;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Your Cart</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Album</th>
+        <th>Quantity</th>
+        <th>Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${cartItems}">
+        <td th:text="${item.item.name}">Item Name</td>
+        <td th:text="${item.count}">Count</td>
+        <td>
+            <form th:action="@{/cart/delete}" method="post">
+                <input type="hidden" name="cartItemId" th:value="${item.id}" />
+                <button type="submit" class="order-button" style="background-color: #444; color: #fff;">삭제</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<form th:action="@{/orders/cart}" method="post">
+    <button type="submit" class="order-button">장바구니 상품 주문</button>
+</form>
+
+</body>
+</html>
